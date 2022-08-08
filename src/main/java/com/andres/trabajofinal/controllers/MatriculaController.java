@@ -1,6 +1,7 @@
 package com.andres.trabajofinal.controllers;
 
 import com.andres.trabajofinal.dto.MatriculaDTO;
+import com.andres.trabajofinal.exception.ModelNotFoundException;
 import com.andres.trabajofinal.model.Estudiante;
 import com.andres.trabajofinal.model.Matricula;
 import com.andres.trabajofinal.service.IMatriculaService;
@@ -42,6 +43,10 @@ public class MatriculaController {
 
     @GetMapping("/{id}")
     public ResponseEntity<MatriculaDTO> readById(@PathVariable("id") Integer id) throws Exception {
+        Matricula matricula = service.readById(id);
+        if(matricula == null){
+            throw new ModelNotFoundException("No se ha encontrado el ID: " + id);
+        }
         MatriculaDTO MatriculaDTO = mapper.map(service.readById(id), MatriculaDTO.class);
         return new ResponseEntity<>(MatriculaDTO, HttpStatus.OK);
     }
@@ -67,7 +72,10 @@ public class MatriculaController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") Integer id) throws Exception {
-        Matricula obj = service.readById(id);
+        Matricula matricula = service.readById(id);
+        if(matricula == null){
+            throw new ModelNotFoundException("No se ha encontrado el ID: " + id);
+        }
         service.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

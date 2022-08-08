@@ -1,6 +1,7 @@
 package com.andres.trabajofinal.controllers;
 
 import com.andres.trabajofinal.dto.EstudianteDTO;
+import com.andres.trabajofinal.exception.ModelNotFoundException;
 import com.andres.trabajofinal.model.Estudiante;
 import com.andres.trabajofinal.service.IEstudiantesService;
 import org.modelmapper.ModelMapper;
@@ -34,6 +35,10 @@ public class EstudianteController {
 
     @GetMapping("/{id}")
     public ResponseEntity<EstudianteDTO> readById(@PathVariable("id") Integer id) throws Exception {
+        Estudiante estudiante = service.readById(id);
+        if(estudiante == null){
+            throw new ModelNotFoundException("No se ha encontrado el ID: " + id);
+        }
         EstudianteDTO estudianteDTO = mapper.map(service.readById(id), EstudianteDTO.class);
         return new ResponseEntity<>(estudianteDTO, HttpStatus.OK);
     }
@@ -64,7 +69,10 @@ public class EstudianteController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") Integer id) throws Exception {
-        Estudiante obj = service.readById(id);
+        Estudiante estudiante = service.readById(id);
+        if(estudiante == null){
+            throw new ModelNotFoundException("No se ha encontrado el ID: " + id);
+        }
         service.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

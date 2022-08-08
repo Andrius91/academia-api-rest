@@ -1,6 +1,7 @@
 package com.andres.trabajofinal.controllers;
 
 import com.andres.trabajofinal.dto.CursoDTO;
+import com.andres.trabajofinal.exception.ModelNotFoundException;
 import com.andres.trabajofinal.model.Curso;
 import com.andres.trabajofinal.service.ICursoService;
 import com.andres.trabajofinal.service.IEstudiantesService;
@@ -35,6 +36,10 @@ public class CursoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CursoDTO> readById(@PathVariable("id") Integer id) throws Exception {
+        Curso curso = service.readById(id);
+        if(curso == null){
+            throw new ModelNotFoundException("No se ha encontrado el ID: " + id);
+        }
         CursoDTO CursoDTO = mapper.map(service.readById(id), CursoDTO.class);
         return new ResponseEntity<>(CursoDTO, HttpStatus.OK);
     }
@@ -48,18 +53,21 @@ public class CursoController {
 
     @PutMapping
     public ResponseEntity<CursoDTO> update(@Valid @RequestBody CursoDTO dto) throws Exception {
-        Curso Curso = service.readById(dto.getIdCurso());
-        if(Curso == null){
-            throw new NullPointerException("No se ha encontrado el ID: " + dto.getIdCurso());
+        Curso curso = service.readById(dto.getIdCurso());
+        if(curso == null){
+            throw new ModelNotFoundException("No se ha encontrado el ID: " + dto.getIdCurso());
         }
-        Curso = mapper.map(dto, Curso.class);
-        CursoDTO dtoResponse = mapper.map(service.update(Curso), CursoDTO.class);
+        curso = mapper.map(dto, Curso.class);
+        CursoDTO dtoResponse = mapper.map(service.update(curso), CursoDTO.class);
         return new ResponseEntity<>(dtoResponse, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") Integer id) throws Exception {
-        Curso obj = service.readById(id);
+        Curso curso = service.readById(id);
+        if(curso == null){
+            throw new ModelNotFoundException("No se ha encontrado el ID: " + id);
+        }
         service.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

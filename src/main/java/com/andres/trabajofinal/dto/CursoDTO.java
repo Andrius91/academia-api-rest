@@ -26,7 +26,7 @@ public class CursoDTO {
     private String nombre;
 
     @NotNull(message = "Las siglas no pueden ser nulos.")
-    @NotEmpty(message = "Las siglas no pueden estar vaccias.")
+    @NotEmpty(message = "Las siglas no pueden estar vacias.")
     @Size(min = 3, max = 10, message = "El nombre de las siglas debe tener 3 carácteres cómo mínimo y 10 como máximo.")
     private String siglas;
 

@@ -32,4 +32,10 @@ public class GlobalErrorHandler extends ResponseEntityExceptionHandler {
         ErrorResponse res = new ErrorResponse(LocalDateTime.now(), message, request.getDescription(false));
         return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(ModelNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleModelNotFound(ModelNotFoundException ex, WebRequest req){
+        ErrorResponse res = new ErrorResponse(LocalDateTime.now(), ex.getMessage(), req.getDescription(false));
+        return new ResponseEntity<>(res, HttpStatus.NOT_FOUND);
+    }
 }
